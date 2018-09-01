@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 using application.interfaces.message;
@@ -27,13 +28,13 @@ namespace application.services
 
             //TODO: teste
             var text = new string(soundData.Select(b => (char)b).ToArray());
-            if (text == "pushandroid")
+            if (text == "pushandroid" || true)
             {
                 _pushNotificationService.Send(new PushNotificationModel
                 {
                     Notification = new NotificationContentModel
                     {
-                        Body = "Teste note",
+                        Body = text + " " + DateTime.Now.ToShortTimeString(),
                         Title = "titulo"
                     },
                     RegistrationIds = new[] { "d05T7WTY_mw:APA91bEvULvwYkb04yUEQHFjmsmum-smg5FaGvErbPYQTu6N2BzzV9zW9OqefTcNZ5bQsGf18qKZdCd5U0hJggoMU8c748wwbKZWmtkxTQNUyI82VRx9OZs_xvOs_jTNvsvqQRh5PDXu" }

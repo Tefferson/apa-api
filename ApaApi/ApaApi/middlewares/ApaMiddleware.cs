@@ -22,16 +22,9 @@ namespace ApaApi.middlewares
 
         public async Task Invoke(HttpContext context)
         {
-            if (context.Request.Path == "/ws")
+            if (context.Request.Path == "/" && context.WebSockets.IsWebSocketRequest)
             {
-                if (context.WebSockets.IsWebSocketRequest)
-                {
-                    await ListenAsync(context, await context.WebSockets.AcceptWebSocketAsync());
-                }
-                else
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                }
+                await ListenAsync(context, await context.WebSockets.AcceptWebSocketAsync());
             }
             else { await _next(context); }
         }
