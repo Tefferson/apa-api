@@ -1,5 +1,7 @@
 ﻿using application.interfaces.message;
+using application.interfaces.sensor_information;
 using application.interfaces.sound_data_processing;
+using application.interfaces.sound_recognition;
 using application.services;
 using application.settings;
 using Microsoft.Extensions.Configuration;
@@ -35,6 +37,8 @@ namespace crosscutting.ioc.api
         {
             services.AddTransient<IPushNotificationService, PushNotificationService>();
             services.AddTransient<ISoundDataProcessingService, SoundDataProcessingService>();
+            services.AddTransient<ISoundRecognitionService, SoundRecognitionService>();
+            services.AddTransient<ISensorInformationService, SensorInformationService>();
         }
 
         private static void ConfigureSettings(this IServiceCollection services, IConfigurationRoot configurationRoot)

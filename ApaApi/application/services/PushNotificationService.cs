@@ -20,7 +20,7 @@ namespace application.services
             _firebaseSettings = firebaseOptions.Value;
         }
 
-        public async Task Send(PushNotificationModel content)
+        public async Task SendAsync(PushNotificationModel content)
         {
             var httpWebRequest = WebRequest.Create(_firebaseSettings.Address);
             httpWebRequest.ContentType = "application/json";

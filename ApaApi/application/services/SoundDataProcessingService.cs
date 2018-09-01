@@ -2,8 +2,11 @@
 using System.Linq;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
+using application.Helpers;
 using application.interfaces.message;
+using application.interfaces.sensor_information;
 using application.interfaces.sound_data_processing;
+using application.interfaces.sound_recognition;
 using application.models.message;
 
 namespace application.services
@@ -11,13 +14,21 @@ namespace application.services
     public class SoundDataProcessingService : ISoundDataProcessingService
     {
         private readonly IPushNotificationService _pushNotificationService;
+        private readonly ISoundRecognitionService _soundRecognitionService;
+        private readonly ISensorInformationService _sensorInformationService;
 
-        public SoundDataProcessingService(IPushNotificationService pushNotificationService)
+        public SoundDataProcessingService(
+            IPushNotificationService pushNotificationService,
+            ISoundRecognitionService soundRecognitionService,
+            ISensorInformationService sensorInformationService
+            )
         {
             _pushNotificationService = pushNotificationService;
+            _soundRecognitionService = soundRecognitionService;
+            _sensorInformationService = sensorInformationService;
         }
 
-        public Task ProcessBytes(byte[] data, WebSocketReceiveResult result)
+        public async Task ProcessBytes(byte[] data, WebSocketReceiveResult result)
         {
             var reservedBytes = 12;
 
@@ -26,22 +37,24 @@ namespace application.services
                 .Skip(reservedBytes)
                 .ToArray();
 
-            //TODO: teste
-            var text = new string(soundData.Select(b => (char)b).ToArray());
-            if (text == "pushandroid" || true)
+            var matches = await _soundRecognitionService.RecognizeAsync(soundData);
+
+            if (matches.Count() > 0)
             {
-                _pushNotificationService.Send(new PushNotificationModel
+                var sensorId = SensorHelper.IdFromBytes(data);
+                var sensorInfo = await _sensorInformationService.GetInformationAsync(sensorId);
+
+                await _pushNotificationService.SendAsync(new PushNotificationModel
                 {
                     Notification = new NotificationContentModel
                     {
-                        Body = text + " " + DateTime.Now.ToShortTimeString(),
-                        Title = "titulo"
+                        Body = matches.First().Name,
+                        Payload = sensorInfo.RoomTag,
+                        Title = sensorInfo.LocationAlias
                     },
-                    RegistrationIds = new[] { "d05T7WTY_mw:APA91bEvULvwYkb04yUEQHFjmsmum-smg5FaGvErbPYQTu6N2BzzV9zW9OqefTcNZ5bQsGf18qKZdCd5U0hJggoMU8c748wwbKZWmtkxTQNUyI82VRx9OZs_xvOs_jTNvsvqQRh5PDXu" }
+                    RegistrationIds = sensorInfo.ObservingDevices.Select(o => o.Token).ToArray()
                 });
             }
-
-            return Task.CompletedTask;
         }
     }
 }

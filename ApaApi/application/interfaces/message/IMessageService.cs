@@ -4,6 +4,6 @@ namespace application.interfaces.message
 {
     public interface IMessageService<T>
     {
-        Task Send(T content);
+        Task SendAsync(T content);
     }
 }
