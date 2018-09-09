@@ -31,7 +31,7 @@ namespace ApaApi.middlewares
 
         private async Task ListenAsync(HttpContext context, WebSocket webSocket)
         {
-            var buffer = new byte[4 * 1024];
+            var buffer = new byte[1024];
             var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
             await _soundDataProcessingService.ProcessBytes(buffer, result);
             while (!result.CloseStatus.HasValue)

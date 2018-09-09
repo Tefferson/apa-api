@@ -32,29 +32,44 @@ namespace application.services
         {
             var reservedBytes = 12;
 
-            var soundData = data
+            var soundChars = data
                 .Take(result.Count)
                 .Skip(reservedBytes)
+                .Select(d => (char)d)
                 .ToArray();
 
-            var matches = await _soundRecognitionService.RecognizeAsync(soundData);
+            var soundData = new string(soundChars)
+                .Trim()
+                .Split(' ')
+                .Select(s => double.Parse(s));
 
-            if (matches.Count() > 0)
+            var normalizedSoundData = soundData
+                .Select(d => d > 542 || d < 538 ? d : 0)
+                .Select(d => d / 1024d)
+                .ToArray();
+
+            var firstBlock = normalizedSoundData.Take(normalizedSoundData.Length / 2).ToArray();
+            var matches = _soundRecognitionService.RecognizeAsync(firstBlock).ToList();
+
+            var secondBlock = normalizedSoundData.Skip(normalizedSoundData.Length / 2).ToArray();
+            matches.AddRange(_soundRecognitionService.RecognizeAsync(secondBlock).ToList());
+
+            var mostSimilar = matches.OrderByDescending(m => m.Match).First();
+            if (mostSimilar.Match < 0.85) return;
+
+            var sensorId = SensorHelper.IdFromBytes(data);
+            var sensorInfo = await _sensorInformationService.GetInformationAsync(sensorId);
+
+            await _pushNotificationService.SendAsync(new PushNotificationModel
             {
-                var sensorId = SensorHelper.IdFromBytes(data);
-                var sensorInfo = await _sensorInformationService.GetInformationAsync(sensorId);
-
-                await _pushNotificationService.SendAsync(new PushNotificationModel
+                Notification = new NotificationContentModel
                 {
-                    Notification = new NotificationContentModel
-                    {
-                        Body = matches.First().Name,
-                        Payload = sensorInfo.RoomTag,
-                        Title = sensorInfo.LocationAlias
-                    },
-                    RegistrationIds = sensorInfo.ObservingDevices.Select(o => o.Token).ToArray()
-                });
-            }
+                    Body = mostSimilar.Name,
+                    Payload = sensorInfo.RoomTag,
+                    Title = sensorInfo.LocationAlias
+                },
+                RegistrationIds = sensorInfo.ObservingDevices.Select(o => o.Token).ToArray()
+            });
         }
     }
 }

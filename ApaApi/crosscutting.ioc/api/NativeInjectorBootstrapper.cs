@@ -39,11 +39,13 @@ namespace crosscutting.ioc.api
             services.AddTransient<ISoundDataProcessingService, SoundDataProcessingService>();
             services.AddTransient<ISoundRecognitionService, SoundRecognitionService>();
             services.AddTransient<ISensorInformationService, SensorInformationService>();
+            services.AddSingleton<INetworkProvider, NetworkProvider>();
         }
 
         private static void ConfigureSettings(this IServiceCollection services, IConfigurationRoot configurationRoot)
         {
             services.Configure<FireBaseSettings>(configurationRoot.GetSection("Firebase"));
+            services.Configure<MLSettings>(configurationRoot.GetSection("ML"));
         }
     }
 }
