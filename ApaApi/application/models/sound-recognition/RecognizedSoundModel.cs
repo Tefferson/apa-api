@@ -2,7 +2,7 @@
 {
     public class RecognizedSoundModel
     {
-        public string Name { get; set; }
+        public int LabelNumber { get; set; }
         public double Match { get; set; }
     }
 }

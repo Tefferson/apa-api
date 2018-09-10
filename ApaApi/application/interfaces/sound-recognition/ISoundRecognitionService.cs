@@ -5,6 +5,6 @@ namespace application.interfaces.sound_recognition
 {
     public interface ISoundRecognitionService
     {
-        IEnumerable<RecognizedSoundModel> RecognizeAsync(double[] soundData);
+        IEnumerable<RecognizedSoundModel> Recognize(double[] soundData);
     }
 }

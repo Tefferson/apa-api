@@ -8,6 +8,7 @@ using application.interfaces.sensor_information;
 using application.interfaces.sound_data_processing;
 using application.interfaces.sound_recognition;
 using application.models.message;
+using domain.interfaces.repositories;
 
 namespace application.services
 {
@@ -16,16 +17,19 @@ namespace application.services
         private readonly IPushNotificationService _pushNotificationService;
         private readonly ISoundRecognitionService _soundRecognitionService;
         private readonly ISensorInformationService _sensorInformationService;
+        private readonly ISoundLabelRepository _soundLabelRepository;
 
         public SoundDataProcessingService(
             IPushNotificationService pushNotificationService,
             ISoundRecognitionService soundRecognitionService,
-            ISensorInformationService sensorInformationService
+            ISensorInformationService sensorInformationService,
+            ISoundLabelRepository soundLabelRepository
             )
         {
             _pushNotificationService = pushNotificationService;
             _soundRecognitionService = soundRecognitionService;
             _sensorInformationService = sensorInformationService;
+            _soundLabelRepository = soundLabelRepository;
         }
 
         public async Task ProcessBytes(byte[] data, WebSocketReceiveResult result)
@@ -49,10 +53,10 @@ namespace application.services
                 .ToArray();
 
             var firstBlock = normalizedSoundData.Take(normalizedSoundData.Length / 2).ToArray();
-            var matches = _soundRecognitionService.RecognizeAsync(firstBlock).ToList();
+            var matches = _soundRecognitionService.Recognize(firstBlock).ToList();
 
             var secondBlock = normalizedSoundData.Skip(normalizedSoundData.Length / 2).ToArray();
-            matches.AddRange(_soundRecognitionService.RecognizeAsync(secondBlock).ToList());
+            matches.AddRange(_soundRecognitionService.Recognize(secondBlock).ToList());
 
             var mostSimilar = matches.OrderByDescending(m => m.Match).First();
             if (mostSimilar.Match < 0.85) return;
@@ -60,11 +64,13 @@ namespace application.services
             var sensorId = SensorHelper.IdFromBytes(data);
             var sensorInfo = await _sensorInformationService.GetInformationAsync(sensorId);
 
+            var soundLabel = await _soundLabelRepository.GetByLabelNumberAsync(mostSimilar.LabelNumber);
+
             await _pushNotificationService.SendAsync(new PushNotificationModel
             {
                 Notification = new NotificationContentModel
                 {
-                    Body = mostSimilar.Name,
+                    Body = soundLabel?.LabelDescription,
                     Payload = sensorInfo.RoomTag,
                     Title = sensorInfo.LocationAlias
                 },

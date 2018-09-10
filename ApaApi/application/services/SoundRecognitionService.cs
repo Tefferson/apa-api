@@ -17,7 +17,7 @@ namespace application.services
             _network = networkProvider.GetNetwork();
         }
 
-        public IEnumerable<RecognizedSoundModel> RecognizeAsync(double[] soundData)
+        public IEnumerable<RecognizedSoundModel> Recognize(double[] soundData)
         {
             var input = new BasicMLData(soundData, false);
             var output = _network.Compute(input);
@@ -29,7 +29,7 @@ namespace application.services
                 result.Add(new RecognizedSoundModel
                 {
                     Match = output[i],
-                    Name = i.ToString()
+                    LabelNumber = i
                 });
             }
 

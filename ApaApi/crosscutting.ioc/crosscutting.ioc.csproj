@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\application\application.csproj" />
+    <ProjectReference Include="..\infra.data\infra.data.csproj" />
   </ItemGroup>
 
   <ItemGroup>

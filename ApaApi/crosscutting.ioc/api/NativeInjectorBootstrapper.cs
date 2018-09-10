@@ -4,6 +4,10 @@ using application.interfaces.sound_data_processing;
 using application.interfaces.sound_recognition;
 using application.services;
 using application.settings;
+using domain.interfaces.repositories;
+using infra.data.context;
+using infra.data.repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -23,6 +27,15 @@ namespace crosscutting.ioc.api
                 //.AddJsonFile($"appsettings.{envName}.json", false, true)
                 .Build();
 
+            //Infra data
+            var connectionString = configurationRoot.GetConnectionString("DefaultConnection");
+            services.AddDbContext<ApaContext>(options =>
+                options.UseSqlServer(connectionString), ServiceLifetime.Transient, ServiceLifetime.Transient);
+            //services.AddTransient(_ => new ApaContext(connectionString));
+
+            //Repositories
+            services.RegisterRepositories();
+
             // Application services
             services.RegisterAppServices();
 
@@ -31,6 +44,11 @@ namespace crosscutting.ioc.api
 
             // Auto mapper
             //services.AddAutoMapperSetup();
+        }
+
+        private static void RegisterRepositories(this IServiceCollection services)
+        {
+            services.AddTransient<ISoundLabelRepository, SoundLabelRepository>();
         }
 
         private static void RegisterAppServices(this IServiceCollection services)
