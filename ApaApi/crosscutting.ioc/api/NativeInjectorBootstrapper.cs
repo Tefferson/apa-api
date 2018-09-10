@@ -1,5 +1,4 @@
 ﻿using application.interfaces.message;
-using application.interfaces.sensor_information;
 using application.interfaces.sound_data_processing;
 using application.interfaces.sound_recognition;
 using application.services;
@@ -49,6 +48,7 @@ namespace crosscutting.ioc.api
         private static void RegisterRepositories(this IServiceCollection services)
         {
             services.AddTransient<ISoundLabelRepository, SoundLabelRepository>();
+            services.AddTransient<ISensorRepository, SensorRepository>();
         }
 
         private static void RegisterAppServices(this IServiceCollection services)
@@ -56,7 +56,6 @@ namespace crosscutting.ioc.api
             services.AddTransient<IPushNotificationService, PushNotificationService>();
             services.AddTransient<ISoundDataProcessingService, SoundDataProcessingService>();
             services.AddTransient<ISoundRecognitionService, SoundRecognitionService>();
-            services.AddTransient<ISensorInformationService, SensorInformationService>();
             services.AddSingleton<INetworkProvider, NetworkProvider>();
         }
 

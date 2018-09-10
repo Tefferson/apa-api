@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 using application.Helpers;
 using application.interfaces.message;
-using application.interfaces.sensor_information;
 using application.interfaces.sound_data_processing;
 using application.interfaces.sound_recognition;
 using application.models.message;
@@ -16,20 +14,20 @@ namespace application.services
     {
         private readonly IPushNotificationService _pushNotificationService;
         private readonly ISoundRecognitionService _soundRecognitionService;
-        private readonly ISensorInformationService _sensorInformationService;
         private readonly ISoundLabelRepository _soundLabelRepository;
+        private readonly ISensorRepository _sensorRepository;
 
         public SoundDataProcessingService(
             IPushNotificationService pushNotificationService,
             ISoundRecognitionService soundRecognitionService,
-            ISensorInformationService sensorInformationService,
-            ISoundLabelRepository soundLabelRepository
+            ISoundLabelRepository soundLabelRepository,
+            ISensorRepository sensorRepository
             )
         {
             _pushNotificationService = pushNotificationService;
             _soundRecognitionService = soundRecognitionService;
-            _sensorInformationService = sensorInformationService;
             _soundLabelRepository = soundLabelRepository;
+            _sensorRepository = sensorRepository;
         }
 
         public async Task ProcessBytes(byte[] data, WebSocketReceiveResult result)
@@ -62,7 +60,7 @@ namespace application.services
             if (mostSimilar.Match < 0.85) return;
 
             var sensorId = SensorHelper.IdFromBytes(data);
-            var sensorInfo = await _sensorInformationService.GetInformationAsync(sensorId);
+            var sensorInfo = await _sensorRepository.FindAsync(sensorId);
 
             var soundLabel = await _soundLabelRepository.GetByLabelNumberAsync(mostSimilar.LabelNumber);
 
@@ -72,9 +70,9 @@ namespace application.services
                 {
                     Body = soundLabel?.LabelDescription,
                     Payload = sensorInfo.RoomTag,
-                    Title = sensorInfo.LocationAlias
+                    Title = sensorInfo.PlaceAlias
                 },
-                RegistrationIds = sensorInfo.ObservingDevices.Select(o => o.Token).ToArray()
+                RegistrationIds = sensorInfo.ObservingDevices?.Select(o => o.Device.Token).ToArray()
             });
         }
     }
