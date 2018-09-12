@@ -3,6 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <UserSecretsId>d54b028c-a853-4ef4-8c52-3449c54d2a44</UserSecretsId>
+    <RuntimeFrameworkVersion>2.1.1</RuntimeFrameworkVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
+    <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,11 +16,21 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\application\application.csproj" />
     <ProjectReference Include="..\crosscutting.ioc\crosscutting.ioc.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="swagger-ui\index.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="swagger-ui\**" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="appsettings*json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

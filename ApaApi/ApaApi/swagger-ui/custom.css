@@ -1,0 +1,31 @@
+html {
+  box-sizing: border-box;
+  overflow: -moz-scrollbars-vertical;
+  overflow-y: scroll;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+body {
+  margin: 0;
+  background: #fafafa;
+}
+.swagger-ui .topbar {
+  height: 50px;
+  background: #f28713 !important;
+}
+.swagger-ui .topbar .wrapper {
+  background: url(../swagger-ui/logo.png) no-repeat !important;
+  background-size: contain !important;
+  height: 35px !important;
+  margin: 0 !important;
+  background-position-x: 20px !important;
+}
+.topbar-wrapper {
+  display: none !important;
+}
+.swagger-ui .info .title {
+  font-family: Roboto, "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif;
+}

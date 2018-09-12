@@ -9,28 +9,17 @@ using infra.data.repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.IO;
 
 namespace crosscutting.ioc.api
 {
     public static class NativeInjectorBootstrapper
     {
-        public static void RegisterServices(this IServiceCollection services)
+        public static void RegisterServices(this IServiceCollection services, IConfigurationRoot configurationRoot)
         {
-            // Configuration
-            //var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            var configurationRoot = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                //.AddJsonFile($"appsettings.{envName}.json", false, true)
-                .Build();
-
             //Infra data
             var connectionString = configurationRoot.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApaContext>(options =>
                 options.UseSqlServer(connectionString), ServiceLifetime.Transient, ServiceLifetime.Transient);
-            //services.AddTransient(_ => new ApaContext(connectionString));
 
             //Repositories
             services.RegisterRepositories();
