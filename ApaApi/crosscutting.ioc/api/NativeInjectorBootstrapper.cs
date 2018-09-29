@@ -49,6 +49,7 @@ namespace crosscutting.ioc.api
 
         private static void RegisterRepositories(this IServiceCollection services)
         {
+            services.AddTransient<IRecognizedSoundLogRepository, RecognizedSoundLogRepository>();
             services.AddTransient<ISoundLabelRepository, SoundLabelRepository>();
             services.AddTransient<ISensorRepository, SensorRepository>();
             services.AddSingleton<IUserRepository, UserRespository>();

@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 using application.Helpers;
@@ -6,27 +8,31 @@ using application.interfaces.message;
 using application.interfaces.sound_data_processing;
 using application.interfaces.sound_recognition;
 using application.models.message;
+using application.models.sound_recognition;
 using domain.interfaces.repositories;
 
 namespace application.services
 {
     public class SoundDataProcessingService : ISoundDataProcessingService
     {
+        private readonly IRecognizedSoundLogRepository _soundLogRepository;
         private readonly IPushNotificationService _pushNotificationService;
         private readonly ISoundRecognitionService _soundRecognitionService;
         private readonly ISoundLabelRepository _soundLabelRepository;
         private readonly ISensorRepository _sensorRepository;
 
         public SoundDataProcessingService(
+            IRecognizedSoundLogRepository soundLogRepository,
             IPushNotificationService pushNotificationService,
             ISoundRecognitionService soundRecognitionService,
             ISoundLabelRepository soundLabelRepository,
             ISensorRepository sensorRepository
-            )
+        )
         {
             _pushNotificationService = pushNotificationService;
             _soundRecognitionService = soundRecognitionService;
             _soundLabelRepository = soundLabelRepository;
+            _soundLogRepository = soundLogRepository;
             _sensorRepository = sensorRepository;
         }
 
@@ -74,6 +80,14 @@ namespace application.services
                 },
                 RegistrationIds = sensorInfo.ObservingDevices?.Select(o => o.Device.Token).ToArray()
             });
+
+            await LogMathesAsync(sensorId, matches);
+        }
+
+        private async Task LogMathesAsync(string sensorId, IList<RecognizedSoundModel> matches)
+        {
+            foreach (var match in matches.Where(m => m.Match >= 0.85))
+                await _soundLogRepository.CreateAsync(sensorId, match.LabelNumber, match.Match);
         }
     }
 }
