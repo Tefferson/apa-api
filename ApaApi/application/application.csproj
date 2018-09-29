@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\crosscutting.identity\crosscutting.identity.csproj" />
     <ProjectReference Include="..\domain\domain.csproj" />
   </ItemGroup>
 

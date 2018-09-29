@@ -1,4 +1,5 @@
-﻿using domain.models;
+﻿using crosscutting.identity.models;
+using domain.models;
 using Microsoft.EntityFrameworkCore;
 
 namespace infra.data.context
@@ -19,5 +20,6 @@ namespace infra.data.context
         public virtual DbSet<Sensor> Sensor { get; set; }
         public virtual DbSet<Device> Device { get; set; }
         public virtual DbSet<SensorDevice> SensorDevice { get; set; }
+        public virtual DbSet<ApplicationUser> ApplicationUser { get; set; }
     }
 }

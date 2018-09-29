@@ -31,6 +31,7 @@
   <ItemGroup>
     <None Update="swagger-ui\**" CopyToOutputDirectory="PreserveNewest" />
     <None Update="appsettings*json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="nn-models\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

@@ -5,7 +5,9 @@ using System.Linq;
 using System.Reflection;
 using ApaApi.configurations;
 using ApaApi.middlewares;
+using crosscutting.identity.models;
 using crosscutting.ioc.api;
+using infra.data.context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -22,8 +24,15 @@ using Swashbuckle.AspNetCore.Swagger;
 
 namespace ApaApi
 {
+    /// <summary>
+    /// Define a inicialização do projeto
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Configurar os serviços
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             // Configuration
@@ -76,30 +85,23 @@ namespace ApaApi
             });
 
             //Identity
-            services.AddDefaultIdentity<IdentityUser>();
-            services.AddIdentityCore<IdentityOptions>(options =>
-            {
-                options.Password.RequireDigit = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequireUppercase = true;
-                options.Password.RequiredLength = 6;
-                options.Password.RequiredUniqueChars = 1;
-
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.AllowedForNewUsers = true;
-
-                options.User.AllowedUserNameCharacters =
-                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                options.User.RequireUniqueEmail = false;
-            })
-            .AddDefaultTokenProviders();
+            services
+                .AddDefaultIdentity<ApplicationUser>(options =>
+                    {
+                        options.Password.RequiredLength = 6;
+                        options.Password.RequireLowercase = true;
+                        options.Password.RequireUppercase = false;
+                        options.Password.RequireNonAlphanumeric = false;
+                        options.Password.RequireDigit = true;
+                        options.User.RequireUniqueEmail = true;
+                    })
+                .AddDefaultTokenProviders();
 
             //JWT Support 
             //Authorization
             var signingConfiguration = new SigningConfiguration();
             services.AddSingleton(signingConfiguration);
+
 
             //Gets the token configuration from seSitettings
             var tokenConfiguration = new TokenConfiguration();
@@ -134,6 +136,12 @@ namespace ApaApi
             services.RegisterServices(configurationRoot);
         }
 
+        /// <summary>
+        /// Configurar pipeline da requisição HTTP
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
+        /// <param name="loggerFactory"></param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(LogLevel.Debug);

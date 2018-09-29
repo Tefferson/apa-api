@@ -1,25 +1,35 @@
 ﻿using application.interfaces.sound_data_processing;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Linq;
-using System.Net;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ApaApi.middlewares
 {
+    /// <summary>
+    /// Define o middleware apa
+    /// </summary>
     public class ApaMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly ISoundDataProcessingService _soundDataProcessingService;
 
+        /// <summary>
+        /// Inicializa uma nova instância de ApMiddleware
+        /// </summary>
+        /// <param name="next"></param>
+        /// <param name="soundDataProcessingService"></param>
         public ApaMiddleware(RequestDelegate next, ISoundDataProcessingService soundDataProcessingService)
         {
             _next = next;
             _soundDataProcessingService = soundDataProcessingService;
         }
 
+        /// <summary>
+        /// Direciona as requisições websocket
+        /// </summary>
+        /// <param name="context"></param>
         public async Task Invoke(HttpContext context)
         {
             if (context.Request.Path == "/" && context.WebSockets.IsWebSocketRequest)

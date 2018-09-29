@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "domain", "domain\domain.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "neural-network", "neural-network\neural-network.csproj", "{522455A9-8056-4AE7-A2F1-215D43723DEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "infra.data", "infra.data\infra.data.csproj", "{B4C81874-AA35-4BB6-A328-595979083689}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "infra.data", "infra.data\infra.data.csproj", "{B4C81874-AA35-4BB6-A328-595979083689}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "crosscutting.identity", "crosscutting.identity\crosscutting.identity.csproj", "{BAE8A53A-07D2-40D1-973F-7C88086CB118}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{B4C81874-AA35-4BB6-A328-595979083689}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4C81874-AA35-4BB6-A328-595979083689}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4C81874-AA35-4BB6-A328-595979083689}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAE8A53A-07D2-40D1-973F-7C88086CB118}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAE8A53A-07D2-40D1-973F-7C88086CB118}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAE8A53A-07D2-40D1-973F-7C88086CB118}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAE8A53A-07D2-40D1-973F-7C88086CB118}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
