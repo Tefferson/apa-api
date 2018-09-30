@@ -15,7 +15,10 @@ namespace infra.data.repositories
             _context = context;
         }
 
-        public Task<SoundLabel> GetByLabelNumberAsync(int labelNumber) => 
-            _context.SoundLabel.FirstOrDefaultAsync(s => s.LabelNumber == labelNumber);
+        public Task<SoundLabel> GetByLabelNumberAsync(int labelNumber)
+            => _context
+                .SoundLabel
+                .AsNoTracking()
+                .FirstOrDefaultAsync(s => s.LabelNumber == labelNumber);
     }
 }

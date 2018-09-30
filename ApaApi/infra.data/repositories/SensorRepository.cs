@@ -17,6 +17,7 @@ namespace infra.data.repositories
 
         public Task<Sensor> FindAsync(string id) =>
             _context.Sensor
+                .AsNoTracking()
                 .Include(s => s.ObservingDevices)
                 .ThenInclude(o => o.Device)
                 .FirstOrDefaultAsync(s => s.Id == id);

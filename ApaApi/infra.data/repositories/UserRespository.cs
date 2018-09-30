@@ -23,6 +23,7 @@ namespace infra.data.repositories
             {
                 await _context.ApplicationUser.AddAsync(user, cancellationToken);
                 await _context.SaveChangesAsync(cancellationToken);
+                _context.Entry(user).State = EntityState.Detached;
                 return IdentityResult.Success;
             }
             catch
@@ -35,12 +36,21 @@ namespace infra.data.repositories
         }
 
         public Task<ApplicationUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
-            => _context.ApplicationUser.FirstOrDefaultAsync(a => a.NormalizedEmail == normalizedEmail, cancellationToken);
+            => _context
+                .ApplicationUser
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.NormalizedEmail == normalizedEmail, cancellationToken);
 
         public Task<ApplicationUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
-            => _context.ApplicationUser.FirstOrDefaultAsync(a => a.Id == userId, cancellationToken);
+            => _context
+                .ApplicationUser
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == userId, cancellationToken);
 
         public Task<ApplicationUser> FindByUserNameAsync(string normalizedUserName, CancellationToken cancellationToken)
-            => _context.ApplicationUser.FirstOrDefaultAsync(a => a.NormalizedEmail == normalizedUserName, cancellationToken);
+            => _context
+                .ApplicationUser
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.NormalizedEmail == normalizedUserName, cancellationToken);
     }
 }

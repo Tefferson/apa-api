@@ -26,10 +26,9 @@ namespace infra.data.repositories
                 CreationDate = DateTime.UtcNow
             };
 
-            await _context.RecognizedSoundLog.AddAsync(soundLog);
-
+            _context.Attach(soundLog);
+            _context.Entry(soundLog).State = EntityState.Added;
             await _context.SaveChangesAsync();
-
             _context.Entry(soundLog).State = EntityState.Detached;
         }
     }

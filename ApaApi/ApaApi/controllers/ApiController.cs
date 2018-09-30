@@ -1,5 +1,6 @@
 ﻿using ApaApi.models;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ApaApi.controllers
 {
@@ -8,6 +9,17 @@ namespace ApaApi.controllers
     /// </summary>
     public class ApiController : ControllerBase
     {
+        /// <summary>
+        /// O identificador do usuário autenticado
+        /// </summary>
+        protected string UserId
+        {
+            get
+            {
+                return User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            }
+        }
+
         /// <summary>
         /// A resposta da api
         /// </summary>
