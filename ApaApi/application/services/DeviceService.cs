@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using application.interfaces.device;
 using domain.interfaces.repositories;
-using domain.models;
+using domain.entities;
 
 namespace application.services
 {

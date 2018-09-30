@@ -1,7 +1,9 @@
 ﻿using application.interfaces.device;
 using application.interfaces.identity;
 using application.interfaces.message;
+using application.interfaces.sensor;
 using application.interfaces.sound_data_processing;
+using application.interfaces.sound_log;
 using application.interfaces.sound_recognition;
 using application.services;
 using application.settings;
@@ -54,6 +56,7 @@ namespace crosscutting.ioc.api
             services.AddTransient<ISoundLabelRepository, SoundLabelRepository>();
             services.AddTransient<ISensorRepository, SensorRepository>();
             services.AddScoped<IDeviceRepository, DeviceRepository>();
+            services.AddScoped<ISensorDeviceRepository, SensorDeviceRepository>();
             services.AddSingleton<IUserRepository, UserRespository>();
         }
 
@@ -64,6 +67,8 @@ namespace crosscutting.ioc.api
             services.AddTransient<ISoundRecognitionService, SoundRecognitionService>();
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IDeviceService, DeviceService>();
+            services.AddScoped<ISensorService, SensorService>();
+            services.AddScoped<ISoundLogService, SoundLogService>();
             services.AddSingleton<INetworkProvider, NetworkProvider>();
         }
 

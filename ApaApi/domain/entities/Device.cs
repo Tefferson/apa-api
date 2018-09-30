@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace domain.models
+namespace domain.entities
 {
     public class Device
     {

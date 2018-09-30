@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 using domain.interfaces.repositories;
-using domain.models;
+using domain.entities;
 using infra.data.context;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using domain.models;
+using System.Collections.Generic;
 
 namespace infra.data.repositories
 {
@@ -30,6 +33,29 @@ namespace infra.data.repositories
             _context.Entry(soundLog).State = EntityState.Added;
             await _context.SaveChangesAsync();
             _context.Entry(soundLog).State = EntityState.Detached;
+        }
+
+        public async Task<IEnumerable<SoundLogModel>> ListByUserAsync(string userId)
+        {
+            var events = await _context
+                            .RecognizedSoundLog
+                            .Include(r => r.Sensor)
+                            .Where(e => e.Sensor.ObservingDevices.Any(o => o.Device.UserId == userId))
+                            .Select(r => new
+                            {
+                                r.CreationDate,
+                                r.Sensor.PlaceAlias,
+                                r.Sensor.RoomTag
+                            })
+                            .AsNoTracking()
+                            .ToListAsync();
+
+            return events.Select(e => new SoundLogModel
+            {
+                CreationDate = e.CreationDate,
+                PlaceAlias = e.PlaceAlias,
+                RoomTag = e.RoomTag
+            });
         }
     }
 }

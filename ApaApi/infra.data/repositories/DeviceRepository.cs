@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using domain.interfaces.repositories;
-using domain.models;
+using domain.entities;
 using infra.data.context;
 using Microsoft.EntityFrameworkCore;
 
