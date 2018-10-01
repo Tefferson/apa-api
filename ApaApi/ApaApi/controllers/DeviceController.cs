@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using ApaApi.controllers;
 using ApaApi.models;
+using application.dtos.device;
 using application.interfaces.device;
 using application.interfaces.identity;
 using Microsoft.AspNetCore.Authorization;
@@ -28,7 +29,7 @@ namespace ApaApi.Controllers
         /// <summary>
         /// Enviar o token do dispositivo para receber notificações.
         /// </summary>
-        /// <param name="token">O token do dispositivo</param>
+        /// <param name="sendTokenDTO">O token do dispositivo</param>
         [HttpPost]
         [Authorize("Bearer")]
         [Route("enviar-token")]
@@ -36,9 +37,9 @@ namespace ApaApi.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> SendToken([FromBody] string token)
+        public async Task<IActionResult> SendToken([FromBody] SendTokenDTO sendTokenDTO)
         {
-            await _deviceService.AddOrUpdateToken(token, UserId);
+            await _deviceService.AddOrUpdateToken(sendTokenDTO.Token, UserId);
             return Response();
         }
     }

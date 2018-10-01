@@ -45,16 +45,25 @@ namespace infra.data.repositories
                             {
                                 r.CreationDate,
                                 r.Sensor.PlaceAlias,
-                                r.Sensor.RoomTag
+                                r.Sensor.RoomTag,
+                                r.LabelNumber
                             })
                             .AsNoTracking()
                             .ToListAsync();
+
+            var labelNumbers = events.Select(e => e.LabelNumber).Distinct();
+
+            var labels = _context
+                .SoundLabel
+                .AsNoTracking()
+                .Where(l => labelNumbers.Contains(l.LabelNumber));
 
             return events.Select(e => new SoundLogModel
             {
                 CreationDate = e.CreationDate,
                 PlaceAlias = e.PlaceAlias,
-                RoomTag = e.RoomTag
+                RoomTag = e.RoomTag,
+                Label = labels.First(l => l.LabelNumber == e.LabelNumber).LabelDescription
             });
         }
     }

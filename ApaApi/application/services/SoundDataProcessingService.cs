@@ -81,13 +81,7 @@ namespace application.services
                 RegistrationIds = sensorInfo.ObservingDevices?.Select(o => o.Device.Token).ToArray()
             });
 
-            await LogMathesAsync(sensorId, matches);
-        }
-
-        private async Task LogMathesAsync(string sensorId, IList<RecognizedSoundModel> matches)
-        {
-            foreach (var match in matches.Where(m => m.Match >= 0.85))
-                await _soundLogRepository.CreateAsync(sensorId, match.LabelNumber, match.Match);
+            await _soundLogRepository.CreateAsync(sensorId, soundLabel.LabelNumber, mostSimilar.Match);
         }
     }
 }

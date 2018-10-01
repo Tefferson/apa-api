@@ -6,6 +6,7 @@ namespace domain.models
     {
         public string PlaceAlias { get; set; }
         public string RoomTag { get; set; }
+        public string Label { get; set; }
         public DateTime CreationDate { get; set; }
     }
 }
