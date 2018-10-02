@@ -16,7 +16,7 @@ namespace neural_network
         static void Main(string[] args)
         {
             var apann = new ApaNN();
-            //apann.Train();
+            apann.Train();
 
             var network = apann.LoadModel();
             apann.Execute(network);
@@ -84,7 +84,7 @@ namespace neural_network
 
         public BasicMLDataSet LoadDataSet()
         {
-            var path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "dataset.txt");
+            var path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "dataset", "dataset.txt");
             var lines = File.ReadAllLines(path);
 
             var input = new List<double[]>();
@@ -124,7 +124,7 @@ namespace neural_network
                 train.Iteration();
                 Console.WriteLine($"Epoch: # {epoch}; Error: {train.Error};");
                 epoch++;
-            } while (train.Error > 0.01);
+            } while (train.Error > 0.1);
 
             Save(network);
         }

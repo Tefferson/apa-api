@@ -63,7 +63,7 @@ namespace application.services
             matches.AddRange(_soundRecognitionService.Recognize(secondBlock).ToList());
 
             var mostSimilar = matches.OrderByDescending(m => m.Match).First();
-            if (mostSimilar.Match < 0.85) return;
+            if (mostSimilar.Match >= 0.6 && mostSimilar.Match <= 0.85) return;
 
             var sensorId = SensorHelper.IdFromBytes(data);
             var sensorInfo = await _sensorRepository.FindAsync(sensorId);
